@@ -1,0 +1,33 @@
+{
+    "camelcase": true,
+    "eqeqeq": true,
+    "esnext": true,
+    "es3": false,
+    "indent": 2,
+    "undef": true,
+    "unused": true,
+    "strict": true,
+    "maxparams": 20,
+    "maxdepth": 8,
+    "maxlen": 120,
+    "browser": true,
+    "validthis": true,
+    "white": true,
+    "nonbsp": true,
+    "node": true,
+    "onevar": true,
+    "globals": {
+        "define": true,
+        "require": true,
+        "Promise": true,
+        "describe": true,
+        "assert": true,
+        "it": true,
+        "expect": true,
+        "ENVIRONMENT": true,
+        "beforeEach": true,
+        "afterEach": true,
+        "before": true,
+        "after": true
+    }
+}

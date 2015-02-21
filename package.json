@@ -1,0 +1,7 @@
+{
+  "name": "purejax",
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "grunt-cli": "0.1.x"
+  }
+}
