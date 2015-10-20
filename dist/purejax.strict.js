@@ -3,14 +3,16 @@
  * @author Marc Binder <marcandrebinder@gmail.com>
  */
 
-const rootNode = document.getElementsByTagName('script')[0] || document.head;
-let count = 0;
-const prefix = '___pj';
-const cacheKey = '_';
-let isArray;
-const XMLHttpRequest = window.XMLHttpRequest;
-const createActiveXObject = window.ActiveXObject;
-const typeMap = {
+'use strict';
+
+var rootNode = document.getElementsByTagName('script')[0] || document.head;
+var count = 0;
+var prefix = '___pj';
+var cacheKey = '_';
+var isArray = undefined;
+var XMLHttpRequest = window.XMLHttpRequest;
+var createActiveXObject = window.ActiveXObject;
+var typeMap = {
   '[object Boolean]': 'boolean',
   '[object Number]': 'number',
   '[object String]': 'string',
@@ -22,10 +24,10 @@ const typeMap = {
   '[object Error]': 'error',
   '[object Symbol]': 'symbol'
 };
-const toString = typeMap.toString;
-const hasOwnProperty = typeMap.hasOwnProperty;
+var toString = typeMap.toString;
+var hasOwnProperty = typeMap.hasOwnProperty;
 
-isArray = (Array.isArray) ? Array.isArray : function isArrayPolyfill(value) {
+isArray = Array.isArray ? Array.isArray : function isArrayPolyfill(value) {
   return Object.prototype.toString.call(value) === '[object Array]';
 };
 
@@ -34,14 +36,11 @@ function type(value) {
     return value + '';
   }
 
-  return typeof value === 'object' || typeof value === 'function' ?
-    typeMap[toString.call(value) ] || 'object' :
-    typeof value
-  ;
+  return typeof value === 'object' || typeof value === 'function' ? typeMap[toString.call(value)] || 'object' : typeof value;
 }
 
 function isPlainObject(value) {
-  if (type(value) !== 'object' || value.nodeType || (value !== null && value === value.window) ) {
+  if (type(value) !== 'object' || value.nodeType || value !== null && value === value.window) {
     return false;
   }
 
@@ -70,7 +69,7 @@ function extend() {
     index++;
   }
 
-  if (type(target) !== 'object' && type(target) !== 'function' ) {
+  if (type(target) !== 'object' && type(target) !== 'function') {
     target = {};
   }
 
@@ -120,8 +119,8 @@ function paramify(data, delimiter) {
   var value;
   var index;
 
-  delimiter = (typeof delimiter === 'undefined') ? true : delimiter;
-  delimiter = (delimiter) ? '?' : '';
+  delimiter = typeof delimiter === 'undefined' ? true : delimiter;
+  delimiter = delimiter ? '?' : '';
   data = data || {};
 
   for (key in data) {
@@ -142,7 +141,7 @@ function paramify(data, delimiter) {
 
   result = result.join('&');
 
-  return ((result.length > 0) ? delimiter : '') + result;
+  return (result.length > 0 ? delimiter : '') + result;
 }
 
 /**
@@ -172,20 +171,20 @@ function jsonp(options, callback) {
       script.parentNode.removeChild(script);
     }
 
-    window[id] = function() {};
+    window[id] = function () {};
 
     if (current) {
       clearTimeout(current);
     }
   }
 
-  window[id] = function(data) {
+  window[id] = function (data) {
     cleanUp();
     callback(null, data);
   };
 
   if (options.timeout) {
-    current = setTimeout(function() {
+    current = setTimeout(function () {
       cleanUp();
       callback(createTimeoutError(options.timeout), null);
     }, options.timeout);
@@ -214,14 +213,14 @@ function http(options, callback) {
   request = xhr();
 
   if (options.timeout) {
-    current = setTimeout(function() {
+    current = setTimeout(function () {
       isTimeoutTriggered = true;
       callback(createTimeoutError(options.timeout), null);
       request.abort();
     }, options.timeout);
   }
 
-  request.onreadystatechange = function() {
+  request.onreadystatechange = function () {
     var statusCode;
     var error;
 
@@ -279,12 +278,12 @@ function purejax(options, callback) {
   options.method = options.method.toUpperCase();
 
   if (!options.cache) {
-    options.params[cacheKey] = (+new Date());
+    options.params[cacheKey] = +new Date();
   }
 
   if (isPromiseAvailable && !callback) {
-    return new Promise(function(resolve, reject) {
-      purejax(options, function(error, response) {
+    return new Promise(function (resolve, reject) {
+      purejax(options, function (error, response) {
         if (error) {
           return reject(error);
         }
@@ -298,7 +297,7 @@ function purejax(options, callback) {
     throw new Error('Invalid callback obtained');
   }
 
-  return ((options.jsonp) ? jsonp : http)(options, callback);
+  return (options.jsonp ? jsonp : http)(options, callback);
 }
 
-export default purejax;
+exports['default'] = purejax;
